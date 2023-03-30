@@ -31,7 +31,7 @@ CREATE TABLE hotel (
                         description VARCHAR(256),
                         image_url VARCHAR(256),
                         address VARCHAR(256),
-                        phone BIGINT,
+                        phone VARCHAR(256),
                         email VARCHAR(256),
                         website VARCHAR(256),
                         average_rating SMALLINT,
@@ -46,7 +46,7 @@ CREATE TABLE room (
                         name VARCHAR(256),
                         description VARCHAR(256),
                         image_url VARCHAR(256),
-                        price BIGINT,
+                        price VARCHAR(256),
                         hotel_id BIGINT,
                         created_at TIMESTAMP,
                         updated_at TIMESTAMP
