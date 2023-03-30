@@ -8,7 +8,7 @@ import (
 
 func GetAllHotels(db *sql.DB) (hotels []entities.Hotel, err error) {
 	sql := `
-		SELECT h.*, AVG(r.rating) AS average_rating
+		SELECT h.*, COALESCE(AVG(r.rating), 0.0) AS average_rating
 		FROM hotel h
 		LEFT JOIN review r ON h.id = r.hotel_id
 		GROUP BY h.id

@@ -44,7 +44,7 @@ func InsertCountries(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "City added",
+		"result": "Country added",
 	})
 }
 
