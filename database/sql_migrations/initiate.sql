@@ -1,9 +1,9 @@
 -- +migrate Up
 -- +migrate StatementBegin
 
-CREATE TABLE user (
+CREATE TABLE users (
                         id SERIAL PRIMARY KEY,
-                        name VARCHAR(256),
+                        username VARCHAR(256),
                         email VARCHAR(256),
                         password VARCHAR(256),
                         created_at TIMESTAMP,
@@ -34,10 +34,11 @@ CREATE TABLE hotel (
                         phone BIGINT,
                         email VARCHAR(256),
                         website VARCHAR(256),
-                        rating BIGINT,
+                        average_rating SMALLINT,
+                        city_id BIGINT,
+                        country_id BIGINT,
                         created_at TIMESTAMP,
-                        updated_at TIMESTAMP,
-                        city_id BIGINT
+                        updated_at TIMESTAMP
 );
 
 CREATE TABLE room (
@@ -46,9 +47,18 @@ CREATE TABLE room (
                         description VARCHAR(256),
                         image_url VARCHAR(256),
                         price BIGINT,
+                        hotel_id BIGINT,
                         created_at TIMESTAMP,
-                        updated_at TIMESTAMP,
-                        hotel_id BIGINT
+                        updated_at TIMESTAMP
 );
+
+CREATE TABLE review (
+                        id SERIAL PRIMARY KEY,
+                        hotel_id BIGINT NOT NULL,
+                        rating SMALLINT NOT NULL,
+                        description VARCHAR(256),
+                        created_at TIMESTAMP,
+                        updated_at TIMESTAMP
+)
 
 -- +migrate StatementEnd

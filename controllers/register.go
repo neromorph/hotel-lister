@@ -1,25 +1,28 @@
 package controllers
 
 import (
-	"database/sql"
-	"golang.org/x/crypto/bcrypt"
+	"hotel-lister/database"
 	"hotel-lister/entities"
-	"time"
+	"hotel-lister/repository"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-func Register(db *sql.DB, user entities.User) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
+func Register(c *gin.Context) {
+	var user entities.User
+
+	// Parse the JSON data from the request body into the user struct
+	if err := c.BindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	now := time.Now()
-	user.Created_at = now
-	user.Updated_at = now
-
-	_, err = db.Exec("INSERT INTO user (username, password, email, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)", user.Username, hashedPassword, user.Email, user.Created_at, user.Updated_at)
-	if err != nil {
-		return err
+	// Call the Register function with the parsed user data
+	if err := repository.Register(database.DbConnection, user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	return nil
+
+	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
 }

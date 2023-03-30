@@ -1,36 +1,61 @@
 package controllers
 
 import (
-	"database/sql"
+	"hotel-lister/database"
 	"hotel-lister/entities"
-	"time"
+	"hotel-lister/repository"
+	"net/http"
+	"os"
 
-	"golang.org/x/crypto/bcrypt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 )
 
-func Login(db *sql.DB, username string, password string) (string, error) {
-	// Retrieve the user information from the database based on the username
-	row := db.QueryRow("SELECT id, username, password, created_at, updated_at FROM users WHERE username=$1", username)
-	var user User
-	err := row.Scan(&user.ID, &user.Username, &user.Password, &user.Created_at, &user.Updated_at)
-	if err != nil {
-		return "", err
+func Login(c *gin.Context) {
+	var loginUser entities.User
+
+	if err := c.ShouldBindJSON(&loginUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
-	// Verify the password against the hashed password stored in the database
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
+	tokenString, err := repository.Login(database.DbConnection, loginUser.Username, loginUser.Password)
 	if err != nil {
-		return "", err
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		return
 	}
-	// Generate a JWT token for the user
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":         user.ID,
-		"username":   user.Username,
-		"created_at": user.Created_at,
-		"updated_at": user.Updated_at,
+
+	// Parse the token to get the claims
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Get the secret key from environment variable
+		jwtKey := []byte(os.Getenv("JWT_SECRET"))
+		return jwtKey, nil
 	})
-	jwtToken, err := token.SignedString([]byte("secret-key"))
 	if err != nil {
-		return "", err
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		return
 	}
-	return jwtToken, nil
+
+	// Extract the claims from the token
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
+		return
+	}
+
+	// Extract the user details from the claims
+	userID := claims["id"].(float64)
+	username := claims["username"].(string)
+	email := claims["email"].(string)
+	createdAt := claims["created_at"].(string)
+	updatedAt := claims["updated_at"].(string)
+
+	c.JSON(http.StatusOK, gin.H{
+		"token":      tokenString,
+		"user_id":    userID,
+		"username":   username,
+		"email":      email,
+		"created_at": createdAt,
+		"updated_at": updatedAt,
+	})
 }
