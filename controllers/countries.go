@@ -10,11 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetCountries(c *gin.Context) {
-	var (
-		result gin.H
-	)
+var (
+	result    gin.H
+	countries entities.Country
+)
 
+func GetCountries(c *gin.Context) {
 	countries, err := repository.GetCountries(database.DbConnection)
 
 	if err != nil {
@@ -31,7 +32,6 @@ func GetCountries(c *gin.Context) {
 }
 
 func InsertCountries(c *gin.Context) {
-	var countries entities.Country
 
 	err := c.ShouldBindJSON(&countries)
 	if err != nil {
@@ -49,7 +49,6 @@ func InsertCountries(c *gin.Context) {
 }
 
 func UpdateCountries(c *gin.Context) {
-	var countries entities.Country
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := c.ShouldBindJSON(&countries)
@@ -71,7 +70,6 @@ func UpdateCountries(c *gin.Context) {
 }
 
 func DeleteCountries(c *gin.Context) {
-	var countries entities.Country
 	id, err := strconv.Atoi(c.Param("id"))
 
 	countries.ID = id
@@ -87,9 +85,6 @@ func DeleteCountries(c *gin.Context) {
 }
 
 func GetHotelByCountries(c *gin.Context) {
-	var (
-		result gin.H
-	)
 
 	countryID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

@@ -26,7 +26,7 @@ func Login(db *sql.DB, username string, password string) (string, error) {
 		return "", err
 	}
 
-	expirationTime := time.Now().Add(time.Hour)
+	expirationTime := time.Now().Add(24 * time.Hour)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":         user.ID,

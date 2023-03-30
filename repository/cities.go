@@ -2,7 +2,9 @@ package repository
 
 import (
 	"database/sql"
+	"errors"
 	"hotel-lister/entities"
+	"math"
 )
 
 func GetCities(db *sql.DB) (cities []entities.City, err error) {
@@ -27,7 +29,19 @@ func GetCities(db *sql.DB) (cities []entities.City, err error) {
 }
 
 func InsertCities(db *sql.DB, cities entities.City) (err error) {
-	sql := "INSERT INTO city (id, name, country_id, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW())"
+	sql := "SELECT COUNT(*) FROM city WHERE id = $1"
+	var count int
+	err = db.QueryRow(sql, cities.ID).Scan(&count)
+	if err != nil {
+		return err
+	}
+
+	// If there is already a record with the same ID, return an error.
+	if count > 0 {
+		return errors.New("city with the given ID already exists")
+	}
+
+	sql = "INSERT INTO city (id, name, country_id, created_at, updated_at) VALUES ($1, $2, $3, NOW(), NOW())"
 
 	errs := db.QueryRow(sql, cities.ID, cities.Name, &cities.Country_id)
 
@@ -51,7 +65,13 @@ func DeleteCities(db *sql.DB, cities entities.City) (err error) {
 }
 
 func GetHotelByCities(db *sql.DB, cities entities.City) (hotel []entities.Hotel, err error) {
-	sql := "SELECT * FROM hotel WHERE city_id = $1"
+	sql := `
+	SELECT h.*, AVG(r.rating) AS average_rating
+		FROM hotel h
+		LEFT JOIN review r ON h.id = r.hotel_id
+		WHERE h.city_id = $1
+		GROUP BY h.id
+`
 
 	rows, err := db.Query(sql, cities.ID)
 	if err != nil {
@@ -63,10 +83,13 @@ func GetHotelByCities(db *sql.DB, cities entities.City) (hotel []entities.Hotel,
 
 	for rows.Next() {
 		var hotel entities.Hotel
-		err := rows.Scan(&hotel.ID, &hotel.Name, &hotel.Description, &hotel.Image_url, &hotel.Phone, &hotel.Email, &hotel.Website, &hotel.Address, &hotel.AverageRating, &hotel.City_id, &hotel.Created_at, &hotel.Updated_at)
+		err := rows.Scan(&hotel.ID, &hotel.Name, &hotel.Description, &hotel.Image_url, &hotel.Phone, &hotel.Email, &hotel.Website, &hotel.Address, &hotel.AverageRating, &hotel.Country_id, &hotel.City_id, &hotel.Created_at, &hotel.Updated_at, &hotel.AverageRatingFloat64)
 		if err != nil {
 			return nil, err
 		}
+
+		hotel.AverageRatingFloat64 = math.Round(hotel.AverageRatingFloat64*10) / 10
+
 		hotels = append(hotels, hotel)
 	}
 

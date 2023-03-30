@@ -3,10 +3,16 @@ package repository
 import (
 	"database/sql"
 	"hotel-lister/entities"
+	"math"
 )
 
 func GetAllHotels(db *sql.DB) (hotels []entities.Hotel, err error) {
-	sql := "SELECT * FROM hotel"
+	sql := `
+		SELECT h.*, AVG(r.rating) AS average_rating
+		FROM hotel h
+		LEFT JOIN review r ON h.id = r.hotel_id
+		GROUP BY h.id
+	`
 
 	rows, err := db.Query(sql)
 
@@ -17,16 +23,11 @@ func GetAllHotels(db *sql.DB) (hotels []entities.Hotel, err error) {
 	for rows.Next() {
 		var hotel = entities.Hotel{}
 
-		err = rows.Scan(&hotel.ID, &hotel.Name, &hotel.Description, &hotel.Image_url, &hotel.Phone, &hotel.Email, &hotel.Website, &hotel.Address, &hotel.AverageRating, &hotel.Country_id, &hotel.City_id, &hotel.Created_at, &hotel.Updated_at)
+		err = rows.Scan(&hotel.ID, &hotel.Name, &hotel.Description, &hotel.Image_url, &hotel.Phone, &hotel.Email, &hotel.Website, &hotel.Address, &hotel.AverageRating, &hotel.Country_id, &hotel.City_id, &hotel.Created_at, &hotel.Updated_at, &hotel.AverageRatingFloat64)
 		if err != nil {
 			panic(err)
 		}
-
-		if hotel.AverageRating.Valid {
-			var value interface{}
-			value, _ = hotel.AverageRating.Value()
-			hotel.AverageRating.Float64 = value.(float64)
-		}
+		hotel.AverageRatingFloat64 = math.Round(hotel.AverageRatingFloat64*10) / 10
 
 		hotels = append(hotels, hotel)
 	}
