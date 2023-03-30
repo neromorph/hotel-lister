@@ -35,7 +35,6 @@ func GetAllHotels(db *sql.DB) (hotels []entities.Hotel, err error) {
 }
 
 func InsertHotels(db *sql.DB, hotel entities.Hotel) (err error) {
-
 	sql := "INSERT INTO hotel (name, description, image_url, phone, email, website, address, city_id, country_id, created_at, updated_at) VALUES ($1,$2,$3, $4, $5, $6, $7, $8, $9, NOW(), NOW())"
 
 	errs := db.QueryRow(sql, &hotel.Name, &hotel.Description, &hotel.Image_url, &hotel.Phone, &hotel.Email, &hotel.Website, &hotel.Address, &hotel.City_id, &hotel.Country_id)

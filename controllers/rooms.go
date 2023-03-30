@@ -3,6 +3,7 @@ package controllers
 import (
 	"hotel-lister/database"
 	"hotel-lister/entities"
+	"hotel-lister/helpers"
 	"hotel-lister/repository"
 	"net/http"
 	"strconv"
@@ -46,6 +47,10 @@ func InsertRooms(c *gin.Context) {
 		panic(err)
 	}
 
+	if !helpers.IsValidURL(rooms.Image_url) {
+		errors = append(errors, "Invalid image URL")
+	}
+
 	err = repository.InsertRooms(database.DbConnection, rooms)
 	if err != nil {
 		panic(err)
@@ -66,6 +71,10 @@ func UpdateRooms(c *gin.Context) {
 	}
 
 	rooms.ID = id
+
+	if !helpers.IsValidURL(rooms.Image_url) {
+		errors = append(errors, "Invalid image URL")
+	}
 
 	err = repository.UpdateRooms(database.DbConnection, rooms)
 

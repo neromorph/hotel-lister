@@ -11,6 +11,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	errors []string
+)
+
 func GetAllHotels(c *gin.Context) {
 	var (
 		result gin.H
@@ -33,8 +37,7 @@ func GetAllHotels(c *gin.Context) {
 
 func InsertHotels(c *gin.Context) {
 	var (
-		hotel  entities.Hotel
-		errors []string
+		hotel entities.Hotel
 	)
 
 	err := c.ShouldBindJSON(&hotel)
@@ -43,6 +46,10 @@ func InsertHotels(c *gin.Context) {
 	}
 
 	if !helpers.IsValidURL(hotel.Image_url) {
+		errors = append(errors, "Invalid image URL")
+	}
+
+	if !helpers.IsValidURL(hotel.Website) {
 		errors = append(errors, "Invalid image URL")
 	}
 
@@ -76,6 +83,9 @@ func UpdateHotels(c *gin.Context) {
 	}
 
 	if !helpers.IsValidURL(hotel.Image_url) {
+		errors = append(errors, "Invalid image URL")
+	}
+	if !helpers.IsValidURL(hotel.Website) {
 		errors = append(errors, "Invalid image URL")
 	}
 
