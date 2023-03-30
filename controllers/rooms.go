@@ -52,7 +52,7 @@ func InsertRooms(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Insert Room!",
+		"result": "Room added",
 	})
 }
 
@@ -74,7 +74,7 @@ func UpdateRooms(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Update Room",
+		"result": "Room detail updated",
 	})
 }
 
@@ -90,6 +90,6 @@ func DeleteRooms(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Delete Room",
+		"result": "Room deleted",
 	})
 }

@@ -35,7 +35,7 @@ func Auth(c *gin.Context) {
 
 	if err != nil {
 		log.Println("Error while parsing token:", err)
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Salah"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token is invalid or expired"})
 		return
 	}
 
@@ -44,7 +44,7 @@ func Auth(c *gin.Context) {
 		c.Set("user_id", claims["id"])
 		c.Next()
 	} else {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Salah lagi"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Token is invalid or expired"})
 		return
 	}
 }

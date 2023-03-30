@@ -44,7 +44,7 @@ func InsertCountries(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Insert Countries!",
+		"result": "City added",
 	})
 }
 
@@ -65,7 +65,7 @@ func UpdateCountries(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Update Country",
+		"result": "Country detail updated",
 	})
 }
 
@@ -80,7 +80,7 @@ func DeleteCountries(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Delete Country",
+		"result": "Country deleted",
 	})
 }
 

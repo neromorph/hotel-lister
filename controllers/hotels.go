@@ -59,7 +59,7 @@ func InsertHotels(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Insert Hotel!",
+		"result": "Hotel added",
 	})
 }
 
@@ -95,7 +95,7 @@ func UpdateHotels(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Update Hotel",
+		"result": "Hotel detail updated",
 	})
 }
 
@@ -111,6 +111,6 @@ func DeleteHotels(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Delete Hotel",
+		"result": "Hotel deleted",
 	})
 }

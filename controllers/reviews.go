@@ -44,7 +44,7 @@ func InsertReviews(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Insert Review!",
+		"result": "Review submitted",
 	})
 }
 
@@ -66,7 +66,7 @@ func UpdateReviews(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Update Review",
+		"result": "Review updated",
 	})
 }
 
@@ -82,7 +82,7 @@ func DeleteReviews(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"result": "Success Delete Review",
+		"result": "Review deleted",
 	})
 }
 
