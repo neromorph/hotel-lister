@@ -2,8 +2,8 @@
 API endpoint untuk aplikasi katalog hotel dengan data berdasarkan negara dan kota dengan fitur review.
 
 # Technology Stack
-Go 1.20.2
-PostgreSQL
+- Go 1.20.2
+- PostgreSQL
 
 # API Documentation
 [Postman Documentation](https://documenter.getpostman.com/view/20577005/2s93RTRsZF)
