@@ -49,9 +49,9 @@ func InsertHotels(c *gin.Context) {
 		errors = append(errors, "Invalid image URL")
 	}
 
-	if !helpers.IsValidURL(hotel.Website) {
-		errors = append(errors, "Invalid image URL")
-	}
+	// if !helpers.IsValidURL(hotel.Website) {
+	// 	errors = append(errors, "Invalid image URL")
+	// }
 
 	if len(errors) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -85,9 +85,9 @@ func UpdateHotels(c *gin.Context) {
 	if !helpers.IsValidURL(hotel.Image_url) {
 		errors = append(errors, "Invalid image URL")
 	}
-	if !helpers.IsValidURL(hotel.Website) {
-		errors = append(errors, "Invalid image URL")
-	}
+	// if !helpers.IsValidURL(hotel.Website) {
+	// 	errors = append(errors, "Invalid image URL")
+	// }
 
 	if len(errors) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
